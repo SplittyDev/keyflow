@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use super::{AutoCorrectionItem, AutoCorrectionResult};
+use super::{AutoCorrectionItem, AutoCorrectionResult, AutoCorrectionHelper};
 
 pub struct AutoCorrectionProvider {
     list: Vec<&'static str>,
@@ -20,14 +20,16 @@ impl AutoCorrectionProvider {
         threshold: u16,
     ) -> AutoCorrectionResult<'a, '_> {
         let comp = |a: &str, b: &str| {
-            strsim::normalized_levenshtein(a, b)
+            strsim::normalized_damerau_levenshtein(a, b)
         };
+        let mode = AutoCorrectionHelper::determine_case_mode(refstr);
         let items = {
             let mut tmp = self
                 .list
                 .iter()
                 .map(|s| (*s, (comp(refstr, s) * 1000_f64).trunc() as u16))
                 .filter(|(_, p)| p > &threshold)
+                .map(|(s, p)| (AutoCorrectionHelper::correct_case(mode, s)), p))
                 .map(|(s, p)| AutoCorrectionItem::new(s, p))
                 .collect::<Box<[AutoCorrectionItem]>>();
             tmp.sort_unstable_by(|a, b| b.cmp(&a));

@@ -1,3 +1,5 @@
+use super::{CaseCorrectionMode, AutoCorrectionHelper};
+
 #[derive(Debug, Clone, Eq, Ord)]
 pub struct AutoCorrectionItem<'a> {
     pub priority: u16,
