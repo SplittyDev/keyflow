@@ -12,7 +12,7 @@ impl<'a> AutoCorrectionItem<'a> {
         AutoCorrectionItem { word, priority, mode }
     }
 
-    pub fn case_corrected(&self) -> String {
+    pub fn get_case_corrected(&self) -> String {
         AutoCorrectionHelper::correct_case(&self.mode, self.word)
     }
 }

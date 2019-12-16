@@ -23,11 +23,12 @@ impl AutoCorrectionProvider {
             strsim::normalized_damerau_levenshtein(a, b)
         };
         let mode = AutoCorrectionHelper::determine_case_mode(refstr);
+        let refstr_lower = refstr.to_lowercase();
         let items = {
             let mut tmp = self
                 .list
                 .iter()
-                .map(|s| (*s, (comp(refstr, s) * 1000_f64).trunc() as u16))
+                .map(|s| (*s, (comp(&refstr_lower, s) * 1000_f64).trunc() as u16))
                 .filter(|(_, p)| p > &threshold)
                 .map(|(s, p)| AutoCorrectionItem::new(s, p, mode))
                 .collect::<Box<[AutoCorrectionItem]>>();
@@ -39,7 +40,7 @@ impl AutoCorrectionProvider {
         };
         AutoCorrectionResult::new(
             refstr,
-            items.iter().any(|i| i.word.to_lowercase() == refstr.to_lowercase()),
+            items.iter().any(|i| i.word.to_lowercase() == refstr_lower),
             items,
         )
     }
