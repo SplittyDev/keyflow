@@ -29,8 +29,7 @@ impl AutoCorrectionProvider {
                 .iter()
                 .map(|s| (*s, (comp(refstr, s) * 1000_f64).trunc() as u16))
                 .filter(|(_, p)| p > &threshold)
-                .map(|(s, p)| (AutoCorrectionHelper::correct_case(mode, s)), p))
-                .map(|(s, p)| AutoCorrectionItem::new(s, p))
+                .map(|(s, p)| AutoCorrectionItem::new(s, p, mode))
                 .collect::<Box<[AutoCorrectionItem]>>();
             tmp.sort_unstable_by(|a, b| b.cmp(&a));
             tmp.into_iter()
@@ -40,12 +39,7 @@ impl AutoCorrectionProvider {
         };
         AutoCorrectionResult::new(
             refstr,
-            refstr
-                == if items.is_empty() {
-                    refstr
-                } else {
-                    items[0].word
-                },
+            items.iter().any(|i| i.word.to_lowercase() == refstr.to_lowercase()),
             items,
         )
     }

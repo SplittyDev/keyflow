@@ -1,3 +1,4 @@
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord)]
 pub enum CaseCorrectionMode {
     Screaming,
     Standard,
@@ -15,10 +16,10 @@ impl AutoCorrectionHelper {
         }
     }
     pub fn determine_case_mode(refword: &str) -> CaseCorrectionMode {
-        let mut chars = refword.chars();
-        if refword.len() > 1 && chars.all(|c| c.is_uppercase()) {
+        let chars = refword.chars();
+        if refword.len() > 1 && chars.clone().all(|c| c.is_uppercase()) {
             CaseCorrectionMode::Screaming
-        } else if refword.len() > 1 && chars.all(|c| c.is_lowercase()) {
+        } else if refword.len() > 1 && chars.clone().all(|c| c.is_lowercase()) {
             CaseCorrectionMode::Whispering
         } else {
             CaseCorrectionMode::Standard

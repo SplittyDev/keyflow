@@ -18,7 +18,7 @@ fn main() {
             matches
                 .get_suggestions()
                 .iter()
-                .map(|s| format!("{}: {}", s.word, s.priority))
+                .map(|s| format!("{}: {}", s.case_corrected(), s.priority))
                 .collect::<Vec<String>>()
                 .join(", ")
         );
